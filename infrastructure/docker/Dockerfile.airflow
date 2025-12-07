@@ -1,0 +1,29 @@
+FROM apache/airflow:2.8.0-python3.10
+
+USER root
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    build-essential \
+    libpq-dev \
+    libgeos-dev \
+    libproj-dev \
+    gdal-bin \
+    libgdal-dev \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+USER airflow
+
+# Copy and install Python dependencies
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir --user -r /tmp/requirements.txt
+
+# Set environment
+ENV PYTHONPATH="${PYTHONPATH}:/opt/airflow/scripts"
+ENV AIRFLOW_HOME=/opt/airflow
+
+WORKDIR /opt/airflow
