@@ -1,0 +1,22 @@
+FROM python:3.10-slim
+
+WORKDIR /usr/app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install dbt and dependencies
+RUN pip install --no-cache-dir \
+    dbt-core==1.7.4 \
+    dbt-postgres==1.7.4 \
+    pytest==7.4.3 \
+    pytest-cov==4.1.0
+
+COPY ./dbt_project /usr/app/dbt
+
+WORKDIR /usr/app/dbt
+
+CMD ["tail", "-f", "/dev/null"]
