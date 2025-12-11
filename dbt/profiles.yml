@@ -1,0 +1,24 @@
+airstay:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres
+      port: 5432
+      user: airstay
+      password: airstay_pass
+      dbname: airstay_db
+      schema: gold
+      threads: 4
+      keepalives_idle: 0
+    
+    prod:
+      type: postgres
+      host: postgres
+      port: 5432
+      user: airstay
+      password: airstay_pass
+      dbname: airstay_db
+      schema: gold
+      threads: 8
+      keepalives_idle: 0
