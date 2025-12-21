@@ -408,4 +408,4 @@ if __name__ == "__main__":
     print(f"Cache stats: {stats}")
     
     # Example 4: Start consuming events
-    # manager.consume_events()
+    # manager.consume_events()aaaaaaaaaaaaaaaaaaaaaaaaaaaaaas
