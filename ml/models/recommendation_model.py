@@ -31,7 +31,7 @@ class PropertyRecommendationModel:
         self.item_features_matrix = None
         self.training_metrics = {}
         
-        logger.info("✅ Recommendation Model initialized")
+        logger.info("Recommendation Model initialized")
     
     def prepare_data(
         self,
@@ -45,7 +45,7 @@ class PropertyRecommendationModel:
             interactions_df: User-property interactions
             property_features_df: Property features for hybrid filtering
         """
-        logger.info("📊 Preparing recommendation data...")
+        logger.info("Preparing recommendation data...")
         
         # Create LightFM Dataset
         self.dataset = Dataset()
@@ -68,7 +68,7 @@ class PropertyRecommendationModel:
         if property_features_df is not None:
             self._build_item_features(property_features_df)
         
-        logger.info(f"✅ Data prepared: {interactions.shape}")
+        logger.info(f"Data prepared: {interactions.shape}")
     
     def _build_item_features(self, property_features_df: pd.DataFrame):
         """Build item (property) feature matrix"""
@@ -108,7 +108,7 @@ class PropertyRecommendationModel:
         # Build feature matrix
         self.item_features_matrix = self.dataset.build_item_features(feature_list)
         
-        logger.info(f"✅ Built item features: {self.item_features_matrix.shape}")
+        logger.info(f"Built item features: {self.item_features_matrix.shape}")
     
     def _get_price_range(self, price: float) -> str:
         """Categorize price into ranges"""
@@ -156,7 +156,7 @@ class PropertyRecommendationModel:
             item_alpha: L2 penalty on item features
             user_alpha: L2 penalty on user features
         """
-        logger.info("🚀 Training recommendation model...")
+        logger.info("Training recommendation model...")
         
         # Initialize model
         self.model = LightFM(
@@ -199,7 +199,7 @@ class PropertyRecommendationModel:
                     f"Test P@10: {test_precision:.4f}"
                 )
         
-        logger.info("✅ Model training completed")
+        logger.info("Model training completed")
     
     def evaluate(
         self,
@@ -216,7 +216,7 @@ class PropertyRecommendationModel:
         Returns:
             Dictionary of metrics
         """
-        logger.info("📊 Evaluating model...")
+        logger.info("Evaluating model...")
         
         metrics = {}
         
@@ -249,7 +249,7 @@ class PropertyRecommendationModel:
         
         self.training_metrics = metrics
         
-        logger.info(f"📈 Model Metrics: {metrics}")
+        logger.info(f"Model Metrics: {metrics}")
         
         return metrics
     
@@ -359,7 +359,7 @@ class PropertyRecommendationModel:
         
         conn.close()
         
-        logger.info(f"✅ Generated {len(recommendations)} recommendations for user {user_id}")
+        logger.info(f"Generated {len(recommendations)} recommendations for user {user_id}")
         
         return recommendations
     
@@ -529,7 +529,7 @@ class PropertyRecommendationModel:
         with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
         
-        logger.info(f"✅ Model saved to {filepath}")
+        logger.info(f"Model saved to {filepath}")
     
     def load_model(self, filepath: str):
         """Load model from disk"""
@@ -545,7 +545,7 @@ class PropertyRecommendationModel:
         self.data_processor.reverse_property_map = model_data['reverse_property_map']
         self.training_metrics = model_data['training_metrics']
         
-        logger.info(f"✅ Model loaded from {filepath}")
+        logger.info(f"Model loaded from {filepath}")
 
 
 # Example usage
@@ -587,6 +587,6 @@ if __name__ == "__main__":
         filter_city='New York'
     )
     
-    print(f"\n🎯 Recommendations for User 1001:")
+    print(f"\nRecommendations for User 1001:")
     for rec in recommendations:
         print(f"  - {rec['title']} (Score: {rec['recommendation_score']:.3f})")

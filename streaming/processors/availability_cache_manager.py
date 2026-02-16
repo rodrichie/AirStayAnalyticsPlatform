@@ -48,7 +48,7 @@ class AvailabilityCacheManager:
             'password': 'airstay_pass'
         }
         
-        logger.info("✅ Availability Cache Manager initialized")
+        logger.info("Availability Cache Manager initialized")
     
     def get_cache_key(self, property_id: int, date: str) -> str:
         """Generate cache key for property-date combination"""
@@ -106,7 +106,7 @@ class AvailabilityCacheManager:
             {date: timestamp}
         )
         
-        logger.debug(f"✅ Updated cache for property {property_id}, date {date}")
+        logger.debug(f"Updated cache for property {property_id}, date {date}")
     
     def bulk_update_availability(
         self,
@@ -137,7 +137,7 @@ class AvailabilityCacheManager:
         
         pipeline.execute()
         
-        logger.info(f"✅ Bulk updated {len(date_range)} dates for property {property_id}")
+        logger.info(f"Bulk updated {len(date_range)} dates for property {property_id}")
     
     def check_availability_cached(
         self,
@@ -271,7 +271,7 @@ class AvailabilityCacheManager:
         )
         
         logger.info(
-            f"✅ Updated availability for property {property_id}: "
+            f"Updated availability for property {property_id}: "
             f"{len(date_range)} dates, available={is_available}"
         )
     
@@ -289,7 +289,7 @@ class AvailabilityCacheManager:
     
     def sync_from_database(self, property_id: int, days_ahead: int = 365):
         """Sync availability from database to cache"""
-        logger.info(f"🔄 Syncing property {property_id} from database...")
+        logger.info(f"Syncing property {property_id} from database...")
         
         conn = psycopg2.connect(**self.db_config)
         cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -325,13 +325,13 @@ class AvailabilityCacheManager:
                 minimum_nights=record['minimum_nights']
             )
         
-        logger.info(f"✅ Synced {len(records)} records for property {property_id}")
+        logger.info(f"Synced {len(records)} records for property {property_id}")
         
         return len(records)
     
     def consume_events(self, timeout: int = 1.0):
         """Consume and process events from Kafka"""
-        logger.info("👂 Starting event consumption...")
+        logger.info("Starting event consumption...")
         
         try:
             while True:

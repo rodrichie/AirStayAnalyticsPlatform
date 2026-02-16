@@ -34,7 +34,7 @@ class DemandForecastingModel:
         self.scaler = StandardScaler()
         self.feature_names = []
         
-        logger.info("✅ Demand Forecasting Model initialized")
+        logger.info("Demand Forecasting Model initialized")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -234,7 +234,7 @@ class DemandForecastingModel:
             y_train: Training targets
             model_type: 'rf' or 'gbm'
         """
-        logger.info(f"🚀 Training {model_type} forecasting model...")
+        logger.info(f"Training {model_type} forecasting model...")
         
         # Scale features
         X_train_scaled = self.scaler.fit_transform(X_train)
@@ -259,7 +259,7 @@ class DemandForecastingModel:
         # Train
         self.model.fit(X_train_scaled, y_train)
         
-        logger.info("✅ Model training completed")
+        logger.info("Model training completed")
     
     def evaluate(
         self,
@@ -280,7 +280,7 @@ class DemandForecastingModel:
             'mean_predicted_demand': round(y_pred.mean(), 2)
         }
         
-        logger.info(f"📈 Forecast Metrics: {metrics}")
+        logger.info(f"Forecast Metrics: {metrics}")
         
         return metrics
     
@@ -358,7 +358,7 @@ class DemandForecastingModel:
         with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
         
-        logger.info(f"✅ Model saved to {filepath}")
+        logger.info(f"Model saved to {filepath}")
     
     def load_model(self, filepath: str):
         """Load model from disk"""
@@ -369,7 +369,7 @@ class DemandForecastingModel:
         self.scaler = model_data['scaler']
         self.feature_names = model_data['feature_names']
         
-        logger.info(f"✅ Model loaded from {filepath}")
+        logger.info(f"Model loaded from {filepath}")
 
 
 # Example usage
@@ -391,4 +391,4 @@ if __name__ == "__main__":
     
     # Forecast
     forecast = model.forecast(property_id=1, forecast_days=30)
-    print(f"\n📈 30-day Forecast:\n{forecast.head(10)}")
+    print(f"\n30-day Forecast:\n{forecast.head(10)}")

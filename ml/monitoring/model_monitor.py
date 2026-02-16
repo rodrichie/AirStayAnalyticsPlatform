@@ -27,7 +27,7 @@ class ModelMonitor:
             'password': 'airstay_pass'
         }
         
-        logger.info("✅ Model Monitor initialized")
+        logger.info("Model Monitor initialized")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -136,7 +136,7 @@ class ModelMonitor:
             'evaluated_at': datetime.now().isoformat()
         }
         
-        logger.info(f"📊 {model_name} Metrics: MAE={metrics['mae']}, RMSE={metrics['rmse']}")
+        logger.info(f"{model_name} Metrics: MAE={metrics['mae']}, RMSE={metrics['rmse']}")
         
         return metrics
     
@@ -242,7 +242,7 @@ class ModelMonitor:
             'checked_at': datetime.now().isoformat()
         }
         
-        logger.info(f"📈 Drift Detection: {feature_name} PSI={drift_metrics['psi']:.4f} ({drift_level})")
+        logger.info(f"Drift Detection: {feature_name} PSI={drift_metrics['psi']:.4f} ({drift_level})")
         
         return drift_metrics
     
@@ -303,7 +303,7 @@ class ModelMonitor:
         Returns:
             Complete monitoring report
         """
-        logger.info(f"📊 Generating monitoring report for {model_name}...")
+        logger.info(f"Generating monitoring report for {model_name}...")
         
         report = {
             'model_name': model_name,
@@ -339,7 +339,7 @@ class ABTestManager:
             'password': 'airstay_pass'
         }
         
-        logger.info("✅ A/B Test Manager initialized")
+        logger.info("A/B Test Manager initialized")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -395,7 +395,7 @@ class ABTestManager:
         cursor.close()
         conn.close()
         
-        logger.info(f"✅ Created A/B test '{test_name}' (ID: {test_id})")
+        logger.info(f"Created A/B test '{test_name}' (ID: {test_id})")
         
         return test_id
     
@@ -538,7 +538,7 @@ class ABTestManager:
             'winner': 'b' if variant_b['avg_actual'] > variant_a['avg_actual'] and p_value < 0.05 else 'a'
         }
         
-        logger.info(f"📊 A/B Test Results: Lift={result['lift']:.2f}%, p={result['p_value']:.4f}")
+        logger.info(f"A/B Test Results: Lift={result['lift']:.2f}%, p={result['p_value']:.4f}")
         
         return result
 
@@ -549,7 +549,7 @@ if __name__ == "__main__":
     
     # Generate monitoring report
     report = monitor.generate_monitoring_report('dynamic_pricing')
-    print(f"\n📊 Monitoring Report:\n{json.dumps(report, indent=2)}")
+    print(f"\nMonitoring Report:\n{json.dumps(report, indent=2)}")
     
     # A/B testing
     ab_manager = ABTestManager()
@@ -560,4 +560,4 @@ if __name__ == "__main__":
         traffic_split=0.5
     )
     
-    print(f"\n🧪 Created A/B test: {test_id}")
+    print(f"\nCreated A/B test: {test_id}")

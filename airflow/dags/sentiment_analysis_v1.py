@@ -36,7 +36,7 @@ def process_new_reviews(**context):
     # Process up to 500 reviews per run
     processed_count = analyzer.process_reviews_batch(limit=500)
     
-    logger.info(f"✅ Processed {processed_count} reviews")
+    logger.info(f"Processed {processed_count} reviews")
     
     # Push to XCom for downstream tasks
     context['task_instance'].xcom_push(key='processed_count', value=processed_count)
@@ -94,7 +94,7 @@ def update_property_ratings(**context):
     cursor.close()
     conn.close()
     
-    logger.info(f"✅ Updated {updated_count} property ratings")
+    logger.info(f"Updated {updated_count} property ratings")
     
     return updated_count
 
@@ -155,7 +155,7 @@ def identify_trending_issues(**context):
     conn.close()
     
     if declining_properties:
-        logger.warning(f"⚠️ Found {len(declining_properties)} properties with declining sentiment")
+        logger.warning(f"Found {len(declining_properties)} properties with declining sentiment")
         
         for prop in declining_properties:
             logger.warning(

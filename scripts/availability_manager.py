@@ -30,7 +30,7 @@ class AvailabilityManager:
         redis_url = redis_url or 'redis://redis:6379'
         self.redis_client = redis.from_url(redis_url, decode_responses=True)
         
-        logger.info("✅ Availability Manager initialized")
+        logger.info("Availability Manager initialized")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -93,7 +93,7 @@ class AvailabilityManager:
         cursor.close()
         conn.close()
         
-        logger.info(f"✅ Generated {len(calendar_entries)} days for property {property_id}")
+        logger.info(f"Generated {len(calendar_entries)} days for property {property_id}")
         
         return len(calendar_entries)
     
@@ -194,7 +194,7 @@ class AvailabilityManager:
         # Invalidate cache
         self._invalidate_availability_cache(property_id, check_in, check_out)
         
-        logger.info(f"✅ Blocked {nights_blocked} nights for property {property_id}")
+        logger.info(f"Blocked {nights_blocked} nights for property {property_id}")
         
         return nights_blocked
     
@@ -231,7 +231,7 @@ class AvailabilityManager:
         # Invalidate cache
         self._invalidate_availability_cache(property_id, check_in, check_out)
         
-        logger.info(f"✅ Unblocked {nights_unblocked} nights for property {property_id}")
+        logger.info(f"Unblocked {nights_unblocked} nights for property {property_id}")
         
         return nights_unblocked
     
@@ -431,7 +431,7 @@ class AvailabilityManager:
             except Exception as e:
                 logger.error(f"Error syncing booking {booking['booking_id']}: {e}")
         
-        logger.info(f"✅ Synced {synced_count} bookings to calendar")
+        logger.info(f"Synced {synced_count} bookings to calendar")
         
         return synced_count
 
@@ -441,7 +441,7 @@ if __name__ == "__main__":
     manager = AvailabilityManager()
     
     # Example 1: Generate calendar for next 365 days
-    print("\n📅 Generating availability calendar...")
+    print("\nGenerating availability calendar...")
     days_added = manager.generate_availability_calendar(
         property_id=1,
         start_date=date.today(),
@@ -452,7 +452,7 @@ if __name__ == "__main__":
     print(f"Added {days_added} days to calendar")
     
     # Example 2: Check availability
-    print("\n🔍 Checking availability...")
+    print("\nChecking availability...")
     check_in = date.today() + timedelta(days=7)
     check_out = date.today() + timedelta(days=10)
     
@@ -460,7 +460,7 @@ if __name__ == "__main__":
     print(f"Property available {check_in} to {check_out}: {is_available}")
     
     # Example 3: Calculate occupancy
-    print("\n📊 Calculating occupancy rate...")
+    print("\nCalculating occupancy rate...")
     occupancy = manager.calculate_occupancy_rate(
         property_id=1,
         start_date=date.today(),

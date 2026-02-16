@@ -52,10 +52,10 @@ class ReviewSentimentAnalyzer:
                 device=0 if torch.cuda.is_available() else -1
             )
             
-            logger.info("✅ Sentiment analyzer initialized")
+            logger.info("Sentiment analyzer initialized")
         else:
             self.sentiment_pipeline = None
-            logger.warning("⚠️ Running in mock mode - no real sentiment analysis")
+            logger.warning("Running in mock mode - no real sentiment analysis")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -305,7 +305,7 @@ class ReviewSentimentAnalyzer:
         cursor.close()
         conn.close()
         
-        logger.info(f"✅ Processed {len(updates)} reviews")
+        logger.info(f"Processed {len(updates)} reviews")
         
         return len(updates)
     
@@ -467,12 +467,12 @@ if __name__ == "__main__":
     analyzer = ReviewSentimentAnalyzer()
     
     # Process batch of reviews
-    print("\n🔍 Processing reviews...")
+    print("\nProcessing reviews...")
     processed = analyzer.process_reviews_batch(limit=50)
     print(f"Processed {processed} reviews")
     
     # Get sentiment summary for property
-    print("\n📊 Property sentiment summary...")
+    print("\nProperty sentiment summary...")
     summary = analyzer.get_property_sentiment_summary(property_id=1)
     print(f"Total reviews: {summary['total_reviews']}")
     print(f"Average sentiment: {summary['avg_sentiment']}")
@@ -480,7 +480,7 @@ if __name__ == "__main__":
     print(f"Trend: {summary['trend']}")
     
     # Identify common themes
-    print("\n💬 Common themes...")
+    print("\nCommon themes...")
     themes = analyzer.identify_common_themes(property_id=1)
     for theme in themes[:5]:
         print(f"  - {theme['theme']}: {theme['mentions']} mentions, "

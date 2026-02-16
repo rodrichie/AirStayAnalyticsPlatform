@@ -33,7 +33,7 @@ class BookingStreamProcessor:
     
     def read_booking_stream(self):
         """Read booking events from Kafka"""
-        logger.info("📖 Reading booking events stream...")
+        logger.info("Reading booking events stream...")
         
         df = self.spark \
             .readStream \
@@ -65,7 +65,7 @@ class BookingStreamProcessor:
             col("kafka_timestamp")
         )
         
-        logger.info("✅ Booking stream configured")
+        logger.info("Booking stream configured")
         
         return parsed_df
     
@@ -109,10 +109,10 @@ class BookingStreamProcessor:
                     .mode("append") \
                     .save()
                 
-                logger.info(f"✅ Batch {batch_id} written to database")
+                logger.info(f"Batch {batch_id} written to database")
                 
             except Exception as e:
-                logger.error(f"❌ Error writing batch {batch_id}: {e}")
+                logger.error(f"Error writing batch {batch_id}: {e}")
         
         # Start stream
         query = confirmed_bookings \
@@ -188,7 +188,7 @@ class BookingStreamProcessor:
     
     def run(self):
         """Run all streaming queries"""
-        logger.info("🚀 Starting booking stream processor...")
+        logger.info("Starting booking stream processor...")
         
         # Read stream
         booking_stream = self.read_booking_stream()
@@ -200,7 +200,7 @@ class BookingStreamProcessor:
             self.detect_booking_anomalies(booking_stream)
         ]
         
-        logger.info(f"✅ Started {len(queries)} streaming queries")
+        logger.info(f"Started {len(queries)} streaming queries")
         
         # Wait for termination
         for query in queries:

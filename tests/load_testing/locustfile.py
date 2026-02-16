@@ -234,17 +234,17 @@ class AnalyticsUser(HttpUser):
 @events.test_start.add_listener
 def on_test_start(environment, **kwargs):
     """Called when test starts"""
-    print("🚀 Load test starting...")
+    print("Load test starting...")
 
 
 @events.test_stop.add_listener
 def on_test_stop(environment, **kwargs):
     """Called when test stops"""
-    print("\n✅ Load test completed")
+    print("\nLoad test completed")
     
     stats = environment.stats
     
-    print(f"\n📊 Performance Summary:")
+    print(f"\nPerformance Summary:")
     print(f"   Total requests: {stats.total.num_requests}")
     print(f"   Failures: {stats.total.num_failures}")
     print(f"   Avg response time: {stats.total.avg_response_time:.2f}ms")
@@ -254,7 +254,7 @@ def on_test_stop(environment, **kwargs):
     
     # Performance thresholds
     if stats.total.avg_response_time > 500:
-        print("\n⚠️  WARNING: Average response time exceeds 500ms")
+        print("\nWARNING: Average response time exceeds 500ms")
     
     if stats.total.fail_ratio > 0.01:
-        print(f"\n⚠️  WARNING: Failure rate {stats.total.fail_ratio*100:.2f}% exceeds 1%")
+        print(f"\nWARNING: Failure rate {stats.total.fail_ratio*100:.2f}% exceeds 1%")

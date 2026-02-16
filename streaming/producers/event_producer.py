@@ -56,16 +56,16 @@ class AirStayEventProducer:
         
         self.producer = Producer(conf)
         
-        logger.info(f"✅ Kafka producer initialized: {bootstrap_servers}")
+        logger.info(f"Kafka producer initialized: {bootstrap_servers}")
     
     def _delivery_callback(self, err, msg):
         """Callback for message delivery confirmation"""
         if err:
-            logger.error(f"❌ Message delivery failed: {err}")
+            logger.error(f"Message delivery failed: {err}")
             logger.error(f"   Topic: {msg.topic()}, Partition: {msg.partition()}")
         else:
             logger.debug(
-                f"✅ Message delivered to {msg.topic()} "
+                f"Message delivered to {msg.topic()} "
                 f"[partition {msg.partition()}] at offset {msg.offset()}"
             )
     
@@ -145,7 +145,7 @@ class AirStayEventProducer:
             self.producer.poll(0)
             
             logger.info(
-                f"📤 Event produced: {event_type.value} "
+                f"Event produced: {event_type.value} "
                 f"(ID: {event_id[:8]}..., Topic: {topic})"
             )
             
@@ -255,15 +255,15 @@ class AirStayEventProducer:
         remaining = self.producer.flush(timeout)
         
         if remaining > 0:
-            logger.warning(f"⚠️ {remaining} messages still in queue after flush")
+            logger.warning(f"{remaining} messages still in queue after flush")
         else:
-            logger.info("✅ All messages flushed successfully")
+            logger.info("All messages flushed successfully")
     
     def close(self):
         """Close producer and flush remaining messages"""
         logger.info("Closing Kafka producer...")
         self.flush()
-        logger.info("✅ Kafka producer closed")
+        logger.info("Kafka producer closed")
 
 
 # Example usage
@@ -293,7 +293,7 @@ if __name__ == "__main__":
         booking_data=booking_data
     )
     
-    print(f"✅ Booking event produced: {event_id}")
+    print(f"Booking event produced: {event_id}")
     
     # Example 2: Search event
     search_data = {
@@ -313,7 +313,7 @@ if __name__ == "__main__":
         session_id='session-abc123'
     )
     
-    print(f"✅ Search event produced: {search_event_id}")
+    print(f"Search event produced: {search_event_id}")
     
     # Flush and close
     producer.close()

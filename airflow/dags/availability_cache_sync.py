@@ -62,7 +62,7 @@ def sync_active_properties(**context):
         except Exception as e:
             logger.error(f"Error syncing property {property_id}: {e}")
     
-    logger.info(f"✅ Synced {total_synced} records for {len(property_ids)} properties")
+    logger.info(f"Synced {total_synced} records for {len(property_ids)} properties")
     
     return total_synced
 
@@ -79,7 +79,7 @@ def cleanup_expired_cache(**context):
     # This is handled by Redis TTL, but we log stats
     stats = manager.get_cache_stats()
     
-    logger.info(f"📊 Cache stats: {stats}")
+    logger.info(f"Cache stats: {stats}")
     
     return stats
 

@@ -31,7 +31,7 @@ class RecommendationDataProcessor:
         self.reverse_user_map = {}
         self.reverse_property_map = {}
         
-        logger.info("✅ Recommendation Data Processor initialized")
+        logger.info("Recommendation Data Processor initialized")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -131,7 +131,7 @@ class RecommendationDataProcessor:
         
         filtered = aggregated[aggregated['user_id'].isin(valid_users)]
         
-        logger.info(f"📊 Interaction Stats:")
+        logger.info(f"Interaction Stats:")
         logger.info(f"   Total interactions: {len(filtered)}")
         logger.info(f"   Unique users: {filtered['user_id'].nunique()}")
         logger.info(f"   Unique properties: {filtered['property_id'].nunique()}")
@@ -176,7 +176,7 @@ class RecommendationDataProcessor:
             shape=(len(self.user_id_map), len(self.property_id_map))
         )
         
-        logger.info(f"✅ Created sparse matrix: {interaction_matrix.shape}")
+        logger.info(f"Created sparse matrix: {interaction_matrix.shape}")
         logger.info(f"   Sparsity: {100 * (1 - interaction_matrix.nnz / (interaction_matrix.shape[0] * interaction_matrix.shape[1])):.2f}%")
         
         return interaction_matrix, self.user_id_map, self.property_id_map
@@ -276,7 +276,7 @@ class RecommendationDataProcessor:
         train_df = pd.concat(train_list, ignore_index=True)
         test_df = pd.concat(test_list, ignore_index=True)
         
-        logger.info(f"📊 Train/Test Split:")
+        logger.info(f"Train/Test Split:")
         logger.info(f"   Train: {len(train_df)} interactions")
         logger.info(f"   Test: {len(test_df)} interactions")
         
@@ -296,5 +296,5 @@ if __name__ == "__main__":
     # Create matrix
     matrix, user_map, property_map = processor.create_interaction_matrix(interactions)
     
-    print(f"\n📊 Interaction Matrix: {matrix.shape}")
+    print(f"\nInteraction Matrix: {matrix.shape}")
     print(f"Users: {len(user_map)}, Properties: {len(property_map)}")

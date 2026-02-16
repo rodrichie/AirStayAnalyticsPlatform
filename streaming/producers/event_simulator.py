@@ -37,7 +37,7 @@ class EventSimulator:
     
     def generate_search_events(self, count: int = 10, delay_ms: int = 100):
         """Generate search events"""
-        logger.info(f"🔍 Generating {count} search events...")
+        logger.info(f"Generating {count} search events...")
         
         for i in range(count):
             search_data = {
@@ -61,11 +61,11 @@ class EventSimulator:
             
             time.sleep(delay_ms / 1000.0)
         
-        logger.info(f"✅ Generated {count} search events")
+        logger.info(f"Generated {count} search events")
     
     def generate_booking_events(self, count: int = 5, delay_ms: int = 500):
         """Generate booking events"""
-        logger.info(f"📅 Generating {count} booking events...")
+        logger.info(f"Generating {count} booking events...")
         
         for i in range(count):
             property_id = random.choice(self.property_ids)
@@ -119,11 +119,11 @@ class EventSimulator:
                         reason='booking'
                     )
         
-        logger.info(f"✅ Generated {count} booking events")
+        logger.info(f"Generated {count} booking events")
     
     def generate_review_events(self, count: int = 5, delay_ms: int = 300):
         """Generate review events"""
-        logger.info(f"⭐ Generating {count} review events...")
+        logger.info(f"Generating {count} review events...")
         
         for i in range(count):
             rating = random.randint(3, 5)
@@ -150,7 +150,7 @@ class EventSimulator:
             
             time.sleep(delay_ms / 1000.0)
         
-        logger.info(f"✅ Generated {count} review events")
+        logger.info(f"Generated {count} review events")
     
     def _generate_review_text(self, rating: int) -> str:
         """Generate sample review text based on rating"""
@@ -188,7 +188,7 @@ class EventSimulator:
     ):
         """Generate continuous event stream"""
         logger.info(
-            f"🌊 Starting continuous event stream: "
+            f"Starting continuous event stream: "
             f"{events_per_second} events/sec for {duration_seconds}s"
         )
         
@@ -215,7 +215,7 @@ class EventSimulator:
             # Sleep to maintain events per second rate
             time.sleep(1.0 / events_per_second)
         
-        logger.info(f"✅ Generated {event_count} events in {duration_seconds}s")
+        logger.info(f"Generated {event_count} events in {duration_seconds}s")
 
 
 # Example usage

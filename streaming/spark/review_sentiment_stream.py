@@ -32,7 +32,7 @@ class ReviewSentimentStreamProcessor:
     
     def read_review_stream(self):
         """Read review events from Kafka"""
-        logger.info("📖 Reading review events stream...")
+        logger.info("Reading review events stream...")
         
         df = self.spark \
             .readStream \
@@ -136,7 +136,7 @@ class ReviewSentimentStreamProcessor:
                     .mode("append") \
                     .save()
                 
-                logger.info(f"✅ Batch {batch_id} written")
+                logger.info(f"Batch {batch_id} written")
             except Exception as e:
                 logger.error(f"Error writing batch: {e}")
         
@@ -222,7 +222,7 @@ class ReviewSentimentStreamProcessor:
                     .mode("append") \
                     .save()
                 
-                logger.info(f"✅ Batch {batch_id} written to database")
+                logger.info(f"Batch {batch_id} written to database")
             except Exception as e:
                 logger.error(f"Error writing batch: {e}")
         
@@ -237,7 +237,7 @@ class ReviewSentimentStreamProcessor:
     
     def run(self):
         """Run all streaming queries"""
-        logger.info("🚀 Starting review sentiment stream processor...")
+        logger.info("Starting review sentiment stream processor...")
         
         # Read stream
         review_stream = self.read_review_stream()
@@ -252,7 +252,7 @@ class ReviewSentimentStreamProcessor:
             self.write_reviews_to_database(with_sentiment)
         ]
         
-        logger.info(f"✅ Started {len(queries)} streaming queries")
+        logger.info(f"Started {len(queries)} streaming queries")
         
         # Wait for termination
         for query in queries:

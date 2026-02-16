@@ -49,7 +49,7 @@ def train_model(**context):
     # Push metrics to XCom
     context['task_instance'].xcom_push(key='metrics', value=metrics)
     
-    logger.info(f"✅ Model trained with R²: {metrics['r2']}")
+    logger.info(f"Model trained with R2: {metrics['r2']}")
     
     return metrics
 
@@ -110,7 +110,7 @@ def generate_pricing_recommendations(**context):
     cursor.close()
     conn.close()
     
-    logger.info(f"✅ Generated {len(recommendations)} pricing recommendations")
+    logger.info(f"Generated {len(recommendations)} pricing recommendations")
     
     return len(recommendations)
 

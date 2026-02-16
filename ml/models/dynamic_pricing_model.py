@@ -32,7 +32,7 @@ class DynamicPricingModel:
         self.feature_names = None
         self.training_metrics = {}
         
-        logger.info("✅ Dynamic Pricing Model initialized")
+        logger.info("Dynamic Pricing Model initialized")
     
     def prepare_training_data(
         self,
@@ -51,7 +51,7 @@ class DynamicPricingModel:
         Returns:
             X_train, X_test, y_train, y_test
         """
-        logger.info("📊 Preparing training data...")
+        logger.info("Preparing training data...")
         
         # Build feature matrix
         df = self.feature_engineer.build_feature_matrix(
@@ -111,7 +111,7 @@ class DynamicPricingModel:
             y_val: Validation targets
             params: XGBoost parameters
         """
-        logger.info("🚀 Training XGBoost model...")
+        logger.info("Training XGBoost model...")
         
         # Default parameters
         default_params = {
@@ -149,7 +149,7 @@ class DynamicPricingModel:
             verbose=10
         )
         
-        logger.info("✅ Model training completed")
+        logger.info("Model training completed")
     
     def evaluate(
         self,
@@ -168,7 +168,7 @@ class DynamicPricingModel:
         Returns:
             Dictionary of metrics
         """
-        logger.info("📊 Evaluating model...")
+        logger.info("Evaluating model...")
         
         # Predictions
         y_pred = self.model.predict(X_test)
@@ -190,7 +190,7 @@ class DynamicPricingModel:
         
         self.training_metrics = metrics
         
-        logger.info(f"📈 Model Metrics:")
+        logger.info(f"Model Metrics:")
         logger.info(f"   MAE: ${metrics['mae']}")
         logger.info(f"   RMSE: ${metrics['rmse']}")
         logger.info(f"   R²: {metrics['r2']}")
@@ -239,7 +239,7 @@ class DynamicPricingModel:
         
         plt.tight_layout()
         plt.savefig('/tmp/pricing_model_evaluation.png', dpi=300, bbox_inches='tight')
-        logger.info("✅ Evaluation plots saved to /tmp/pricing_model_evaluation.png")
+        logger.info("Evaluation plots saved to /tmp/pricing_model_evaluation.png")
         
         plt.close()
     
@@ -316,7 +316,7 @@ class DynamicPricingModel:
         Returns:
             DataFrame with predictions
         """
-        logger.info(f"🔮 Predicting prices for {len(property_ids)} properties...")
+        logger.info(f"Predicting prices for {len(property_ids)} properties...")
         
         # Build features
         df = self.feature_engineer.build_feature_matrix(
@@ -341,7 +341,7 @@ class DynamicPricingModel:
             results_df['price_change'] / results_df['current_price'] * 100
         )
         
-        logger.info(f"✅ Batch prediction completed")
+        logger.info(f"Batch prediction completed")
         
         return results_df
     
@@ -384,7 +384,7 @@ class DynamicPricingModel:
         with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
         
-        logger.info(f"✅ Model saved to {filepath}")
+        logger.info(f"Model saved to {filepath}")
     
     def load_model(self, filepath: str):
         """Load model from disk"""
@@ -396,7 +396,7 @@ class DynamicPricingModel:
         self.feature_engineer.encoders = model_data['feature_engineer_encoders']
         self.training_metrics = model_data.get('training_metrics', {})
         
-        logger.info(f"✅ Model loaded from {filepath}")
+        logger.info(f"Model loaded from {filepath}")
         logger.info(f"   Trained at: {model_data.get('trained_at')}")
         logger.info(f"   Metrics: {self.training_metrics}")
 
@@ -422,10 +422,10 @@ if __name__ == "__main__":
     
     # Predict for a property
     prediction = model.predict(property_id=1)
-    print(f"\n🔮 Price Prediction: {prediction}")
+    print(f"\nPrice Prediction: {prediction}")
     
     # Feature importance
     importance = model.get_feature_importance(top_n=10)
-    print(f"\n📊 Top 10 Features:")
+    print(f"\nTop 10 Features:")
     for feature, score in importance:
         print(f"   {feature}: {score:.2f}")

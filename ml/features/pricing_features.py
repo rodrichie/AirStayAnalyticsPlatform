@@ -30,7 +30,7 @@ class PricingFeatureEngineer:
         # Label encoders (fit during training)
         self.encoders = {}
         
-        logger.info("✅ Pricing Feature Engineer initialized")
+        logger.info("Pricing Feature Engineer initialized")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -309,7 +309,7 @@ class PricingFeatureEngineer:
         Returns:
             DataFrame with all features
         """
-        logger.info("🔧 Building feature matrix...")
+        logger.info("Building feature matrix...")
         
         # Extract property features
         properties_df = self.extract_property_features(property_ids)
@@ -376,7 +376,7 @@ class PricingFeatureEngineer:
         df['instant_bookable'] = df['instant_bookable'].astype(int)
         df['host_is_superhost'] = df['host_is_superhost'].astype(int)
         
-        logger.info(f"✅ Built feature matrix: {df.shape}")
+        logger.info(f"Built feature matrix: {df.shape}")
         
         if not include_target:
             df = df.drop(columns=['base_price'], errors='ignore')
@@ -426,6 +426,6 @@ if __name__ == "__main__":
     # Build feature matrix
     df = engineer.build_feature_matrix(include_target=True)
     
-    print(f"\n📊 Feature Matrix Shape: {df.shape}")
-    print(f"\n🔢 Sample Features:\n{df.head()}")
-    print(f"\n📋 Feature Names: {engineer.get_feature_names()}")
+    print(f"\nFeature Matrix Shape: {df.shape}")
+    print(f"\nSample Features:\n{df.head()}")
+    print(f"\nFeature Names: {engineer.get_feature_names()}")

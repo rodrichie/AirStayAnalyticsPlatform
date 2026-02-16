@@ -1,8 +1,8 @@
-# 🏠 AirStay Analytics Platform
+# AirStay Analytics Platform
 
 A production-grade end-to-end data engineering and ML platform for vacation rental analytics, inspired by Airbnb's architecture.
 
-## 🎯 Project Overview
+## Project Overview
 
 This project demonstrates advanced data engineering skills through a complete lakehouse implementation with:
 
@@ -12,7 +12,7 @@ This project demonstrates advanced data engineering skills through a complete la
 - **API serving** (FastAPI + Redis)
 - **Analytics dashboard** (Streamlit)
 
-## 📊 Architecture
+## Architecture
 
 ```
 ┌─────────────┐     ┌──────────────┐     ┌─────────────┐
@@ -42,7 +42,7 @@ This project demonstrates advanced data engineering skills through a complete la
                                            └──────────┘
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -82,12 +82,17 @@ make load-sample-data
 
 1. **Access applications**
 
-- API Documentation: <http://localhost/api/v1/docs>
-- Dashboard: <http://localhost:8501>
-- Airflow: <http://localhost:8080> (admin/admin)
-- Grafana: <http://localhost:3000> (admin/admin)
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| **API - Swagger UI** | <http://localhost:8010/api/v1/docs> | - |
+| **API - ReDoc** | <http://localhost:8010/api/v1/redoc> | - |
+| Streamlit Dashboard | <http://localhost:8512> | - |
+| Airflow | <http://localhost:8085> | admin / admin |
+| Grafana | <http://localhost:3001> | admin / admin |
+| Prometheus | <http://localhost:9092> | - |
+| MinIO Console | <http://localhost:9011> | minioadmin / minioadmin |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 airstay-analytics/
@@ -121,7 +126,7 @@ airstay-analytics/
 └── README.md
 ```
 
-## 🎓 Key Features
+## Key Features
 
 ### Data Engineering
 
@@ -153,7 +158,7 @@ airstay-analytics/
 - **Monitoring**: Prometheus + Grafana
 - **A/B testing**: Built-in experimentation framework
 
-## 📈 Performance Benchmarks
+## Performance Benchmarks
 
 | Metric | Achievement |
 |--------|-------------|
@@ -164,7 +169,7 @@ airstay-analytics/
 | ML Prediction Latency | <50ms |
 | Database Query Time | <100ms avg |
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Unit tests
@@ -178,15 +183,24 @@ locust -f locustfile.py --host http://localhost
 make test-integration
 ```
 
-## 📚 Documentation
+## API Documentation
+
+The API provides interactive documentation via OpenAPI/Swagger:
+
+- **Swagger UI**: <http://localhost:8010/api/v1/docs> -- Interactive API explorer with "Try it out" functionality
+- **ReDoc**: <http://localhost:8010/api/v1/redoc> -- Clean, readable API reference
+- **OpenAPI JSON**: <http://localhost:8010/api/v1/openapi.json> -- Machine-readable specification
+
+The documentation covers all 16+ endpoints across Properties, Bookings, Pricing, Recommendations, and Analytics with request/response schemas and caching details.
+
+## Documentation
 
 - [Architecture Overview](docs/ARCHITECTURE.md)
-- [API Documentation](http://localhost/api/v1/docs)
 - [ML Models Guide](docs/ML_MODELS.md)
 - [Performance Optimization](docs/PERFORMANCE_OPTIMIZATION.md)
 - [Deployment Guide](docs/DEPLOYMENT.md)
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 **Data Processing**
 
@@ -219,7 +233,7 @@ make test-integration
 - Docker & Docker Compose
 - Prometheus + Grafana
 
-## 🎯 Use Cases
+## Use Cases
 
 This platform demonstrates skills for:
 
@@ -228,7 +242,7 @@ This platform demonstrates skills for:
 - **Analytics Engineer**: dbt transformations, metrics
 - **Backend Engineer**: API design, caching, optimization
 
-## 📊 Sample Queries
+## Sample Queries
 
 ### Get Property Recommendations
 
@@ -248,15 +262,15 @@ curl "http://localhost/api/v1/properties/search?city=New%20York&num_guests=2&max
 curl "http://localhost/api/v1/analytics/dashboard/summary?days=30"
 ```
 
-## 🤝 Contributing
+## Contributing
 
 This is a portfolio project, but feedback is welcome!
 
-## 📝 License
+## License
 
 MIT License - see LICENSE file
 
-## 👤 Author
+## Author
 
 **Rodrick Nabasa**
 

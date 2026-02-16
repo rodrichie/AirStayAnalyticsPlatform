@@ -56,10 +56,10 @@ class PropertyImageProcessor:
                 )
             ])
             
-            logger.info("✅ Image processor initialized with ResNet50")
+            logger.info("Image processor initialized with ResNet50")
         else:
             self.model = None
-            logger.warning("⚠️ Image processing in mock mode")
+            logger.warning("Image processing in mock mode")
     
     def download_image(self, bucket: str, object_key: str) -> Image.Image:
         """Download image from MinIO"""
@@ -92,7 +92,7 @@ class PropertyImageProcessor:
                 content_type='image/jpeg'
             )
             
-            logger.info(f"✅ Uploaded {object_key}")
+            logger.info(f"Uploaded {object_key}")
             return True
             
         except Exception as e:
@@ -335,7 +335,7 @@ class PropertyImageProcessor:
         if quality_scores:
             results['avg_quality_score'] = round(np.mean(quality_scores), 3)
         
-        logger.info(f"✅ Processed {len(results['processed_images'])} images for property {property_id}")
+        logger.info(f"Processed {len(results['processed_images'])} images for property {property_id}")
         
         return results
 
@@ -355,7 +355,7 @@ if __name__ == "__main__":
         image_urls=sample_urls
     )
     
-    print(f"📊 Processing Results:")
+    print(f"Processing Results:")
     print(f"   - Images processed: {len(results['processed_images'])}")
     print(f"   - Avg quality: {results['avg_quality_score']}")
     print(f"   - Room types: {results['room_types']}")

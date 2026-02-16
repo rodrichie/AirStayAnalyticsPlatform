@@ -65,7 +65,7 @@ docker exec -it airstay-kafka kafka-topics.sh \
     --config retention.ms=259200000 \
     --if-not-exists
 
-echo "✅ Kafka topics created successfully!"
+echo "Kafka topics created successfully!"
 
 # List all topics
 echo ""

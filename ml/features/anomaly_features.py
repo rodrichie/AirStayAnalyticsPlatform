@@ -26,7 +26,7 @@ class AnomalyFeatureEngineer:
             'password': 'airstay_pass'
         }
         
-        logger.info("✅ Anomaly Feature Engineer initialized")
+        logger.info("Anomaly Feature Engineer initialized")
     
     def _get_db_connection(self):
         """Get database connection"""
@@ -369,9 +369,9 @@ if __name__ == "__main__":
     
     # Extract booking features
     booking_features = engineer.extract_booking_features(lookback_days=90)
-    print(f"\n📊 Booking Features: {booking_features.shape}")
+    print(f"\nBooking Features: {booking_features.shape}")
     print(booking_features.head())
     
     # Extract review features
     review_features = engineer.extract_review_features(lookback_days=90)
-    print(f"\n📊 Review Features: {review_features.shape}")
+    print(f"\nReview Features: {review_features.shape}")

@@ -31,7 +31,7 @@ class AnomalyDetectionModel:
         self.scaler = StandardScaler()
         self.feature_names = []
         
-        logger.info("✅ Anomaly Detection Model initialized")
+        logger.info("Anomaly Detection Model initialized")
     
     def train_booking_anomaly_detector(
         self,
@@ -45,7 +45,7 @@ class AnomalyDetectionModel:
             contamination: Expected proportion of anomalies
             random_state: Random seed
         """
-        logger.info("🚀 Training booking anomaly detector...")
+        logger.info("Training booking anomaly detector...")
         
         # Extract features
         df = self.feature_engineer.extract_booking_features(lookback_days=180)
@@ -93,7 +93,7 @@ class AnomalyDetectionModel:
         # Statistics
         n_anomalies = (predictions == -1).sum()
         
-        logger.info(f"✅ Booking anomaly detector trained")
+        logger.info(f"Booking anomaly detector trained")
         logger.info(f"   Training samples: {len(X)}")
         logger.info(f"   Detected anomalies: {n_anomalies} ({n_anomalies/len(X)*100:.2f}%)")
         logger.info(f"   Anomaly score range: [{anomaly_scores.min():.3f}, {anomaly_scores.max():.3f}]")
@@ -104,7 +104,7 @@ class AnomalyDetectionModel:
         random_state: int = 42
     ):
         """Train Isolation Forest for review anomalies"""
-        logger.info("🚀 Training review anomaly detector...")
+        logger.info("Training review anomaly detector...")
         
         # Extract features
         df = self.feature_engineer.extract_review_features(lookback_days=180)
@@ -147,7 +147,7 @@ class AnomalyDetectionModel:
         predictions = self.review_model.predict(X_scaled)
         n_anomalies = (predictions == -1).sum()
         
-        logger.info(f"✅ Review anomaly detector trained")
+        logger.info(f"Review anomaly detector trained")
         logger.info(f"   Detected anomalies: {n_anomalies} ({n_anomalies/len(X)*100:.2f}%)")
     
     def detect_booking_anomaly(
@@ -262,7 +262,7 @@ class AnomalyDetectionModel:
         Returns:
             DataFrame with anomaly results
         """
-        logger.info(f"🔍 Running batch anomaly detection for {entity_type}s...")
+        logger.info(f"Running batch anomaly detection for {entity_type}s...")
         
         if entity_type == 'booking':
             if self.booking_model is None:
@@ -305,7 +305,7 @@ class AnomalyDetectionModel:
             # Similar implementation for reviews
             results = pd.DataFrame()
         
-        logger.info(f"✅ Detected {results['is_anomaly'].sum()} anomalies")
+        logger.info(f"Detected {results['is_anomaly'].sum()} anomalies")
         
         return results
     
@@ -336,7 +336,7 @@ class AnomalyDetectionModel:
         cursor.close()
         conn.close()
         
-        logger.info(f"✅ Saved {len(results)} anomaly records to database")
+        logger.info(f"Saved {len(results)} anomaly records to database")
     
     def save_model(self, filepath: str):
         """Save model to disk"""
@@ -350,7 +350,7 @@ class AnomalyDetectionModel:
         with open(filepath, 'wb') as f:
             pickle.dump(model_data, f)
         
-        logger.info(f"✅ Model saved to {filepath}")
+        logger.info(f"Model saved to {filepath}")
     
     def load_model(self, filepath: str):
         """Load model from disk"""
@@ -362,7 +362,7 @@ class AnomalyDetectionModel:
         self.scaler = model_data['scaler']
         self.feature_names = model_data['feature_names']
         
-        logger.info(f"✅ Model loaded from {filepath}")
+        logger.info(f"Model loaded from {filepath}")
 
 
 # Example usage
@@ -375,11 +375,11 @@ if __name__ == "__main__":
     
     # Detect anomaly for specific booking
     result = model.detect_booking_anomaly(booking_id=12345)
-    print(f"\n🔍 Anomaly Detection Result: {result}")
+    print(f"\nAnomaly Detection Result: {result}")
     
     # Batch detection
     anomalies = model.batch_detect_anomalies(entity_type='booking', lookback_days=7)
-    print(f"\n📊 Recent Anomalies:\n{anomalies[anomalies['is_anomaly']].head()}")
+    print(f"\nRecent Anomalies:\n{anomalies[anomalies['is_anomaly']].head()}")
     
     # Save model
     model.save_model('/tmp/anomaly_detection_model.pkl')

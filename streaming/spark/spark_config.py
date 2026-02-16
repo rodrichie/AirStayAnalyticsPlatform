@@ -35,7 +35,7 @@ def create_spark_session(app_name: str = "AirStay Streaming") -> SparkSession:
     
     spark.sparkContext.setLogLevel("WARN")
     
-    logger.info(f"✅ Spark session created: {app_name}")
+    logger.info(f"Spark session created: {app_name}")
     logger.info(f"   Spark version: {spark.version}")
     logger.info(f"   Master: {spark.sparkContext.master}")
     

@@ -32,7 +32,7 @@ class SearchAnalyticsProcessor:
 
     def read_search_stream(self):
         """Read search events from Kafka"""
-        logger.info("📖 Reading search events stream...")
+        logger.info("Reading search events stream...")
         
         df = self.spark \
             .readStream \
@@ -115,7 +115,7 @@ class SearchAnalyticsProcessor:
                     .mode("append") \
                     .save()
                 
-                logger.info(f"✅ Batch {batch_id} written")
+                logger.info(f"Batch {batch_id} written")
             except Exception as e:
                 logger.error(f"Error writing batch: {e}")
         

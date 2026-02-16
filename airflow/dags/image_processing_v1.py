@@ -111,7 +111,7 @@ def process_images_batch(**context):
     # Push results to XCom
     context['task_instance'].xcom_push(key='processed_results', value=processed_results)
     
-    logger.info(f"✅ Processed images for {len(processed_results)} properties")
+    logger.info(f"Processed images for {len(processed_results)} properties")
     
     return len(processed_results)
 
@@ -159,7 +159,7 @@ def update_property_metadata(**context):
     cursor.close()
     conn.close()
     
-    logger.info(f"✅ Updated {len(results)} property records")
+    logger.info(f"Updated {len(results)} property records")
     
     return len(results)
 
