@@ -1,0 +1,9 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+RUN pip install --no-cache-dir psycopg2-binary==2.9.9 faker==22.0.0
+
+COPY scripts/generate_sample_data.py .
+
+CMD ["python", "generate_sample_data.py"]

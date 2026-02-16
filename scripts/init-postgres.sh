@@ -1,27 +1,23 @@
 #!/bin/bash
 set -e
 
-echo "🚀 Initializing AirStay Analytics Database..."
+echo "Initializing AirStay Analytics Database..."
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
     -- Enable PostGIS extension
     CREATE EXTENSION IF NOT EXISTS postgis;
     CREATE EXTENSION IF NOT EXISTS postgis_topology;
-    
-    -- Create additional databases
-    CREATE DATABASE airflow_db;
-    CREATE DATABASE mlflow_db;
-    
+
     -- Create schemas
     CREATE SCHEMA IF NOT EXISTS bronze;
     CREATE SCHEMA IF NOT EXISTS silver;
     CREATE SCHEMA IF NOT EXISTS gold;
     CREATE SCHEMA IF NOT EXISTS metadata;
-    
+
     -- ========================================
     -- BRONZE LAYER (Raw Data)
     -- ========================================
-    
+
     CREATE TABLE IF NOT EXISTS bronze.raw_listings (
         id SERIAL PRIMARY KEY,
         listing_id VARCHAR(100),
@@ -31,7 +27,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         source_system VARCHAR(50)
     );
-    
+
     CREATE TABLE IF NOT EXISTS bronze.raw_bookings (
         id SERIAL PRIMARY KEY,
         booking_id VARCHAR(100),
@@ -40,7 +36,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         booking_json JSONB NOT NULL,
         ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
+
     CREATE TABLE IF NOT EXISTS bronze.raw_reviews (
         id SERIAL PRIMARY KEY,
         review_id VARCHAR(100),
@@ -49,11 +45,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         review_json JSONB NOT NULL,
         ingested_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
+
     -- ========================================
     -- SILVER LAYER (Cleansed & Enriched)
     -- ========================================
-    
+
     CREATE TABLE IF NOT EXISTS silver.properties (
         property_id BIGSERIAL PRIMARY KEY,
         listing_id VARCHAR(100) UNIQUE NOT NULL,
@@ -92,18 +88,18 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
-    CREATE INDEX idx_properties_location ON silver.properties USING GIST(location_point);
-    CREATE INDEX idx_properties_city ON silver.properties(location_city);
-    CREATE INDEX idx_properties_type ON silver.properties(property_type);
-    
+
+    CREATE INDEX IF NOT EXISTS idx_properties_location ON silver.properties USING GIST(location_point);
+    CREATE INDEX IF NOT EXISTS idx_properties_city ON silver.properties(location_city);
+    CREATE INDEX IF NOT EXISTS idx_properties_type ON silver.properties(property_type);
+
     CREATE TABLE IF NOT EXISTS silver.bookings (
         booking_id BIGSERIAL PRIMARY KEY,
         property_id BIGINT REFERENCES silver.properties(property_id),
         guest_id BIGINT,
         check_in_date DATE NOT NULL,
         check_out_date DATE NOT NULL,
-        nights INTEGER GENERATED ALWAYS AS (check_out_date - check_in_date) STORED,
+        nights INTEGER,
         num_guests INTEGER,
         base_price DECIMAL(10,2),
         cleaning_fee DECIMAL(10,2),
@@ -117,11 +113,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         canceled_at TIMESTAMP,
         cancellation_reason VARCHAR(255)
     );
-    
-    CREATE INDEX idx_bookings_property ON silver.bookings(property_id);
-    CREATE INDEX idx_bookings_dates ON silver.bookings(check_in_date, check_out_date);
-    CREATE INDEX idx_bookings_status ON silver.bookings(booking_status);
-    
+
+    CREATE INDEX IF NOT EXISTS idx_bookings_property ON silver.bookings(property_id);
+    CREATE INDEX IF NOT EXISTS idx_bookings_dates ON silver.bookings(check_in_date, check_out_date);
+    CREATE INDEX IF NOT EXISTS idx_bookings_status ON silver.bookings(booking_status);
+
     CREATE TABLE IF NOT EXISTS silver.reviews (
         review_id BIGSERIAL PRIMARY KEY,
         property_id BIGINT REFERENCES silver.properties(property_id),
@@ -141,10 +137,10 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         host_response_time_hours INTEGER,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
-    CREATE INDEX idx_reviews_property ON silver.reviews(property_id);
-    CREATE INDEX idx_reviews_rating ON silver.reviews(rating);
-    
+
+    CREATE INDEX IF NOT EXISTS idx_reviews_property ON silver.reviews(property_id);
+    CREATE INDEX IF NOT EXISTS idx_reviews_rating ON silver.reviews(rating);
+
     CREATE TABLE IF NOT EXISTS silver.availability_calendar (
         id BIGSERIAL PRIMARY KEY,
         property_id BIGINT REFERENCES silver.properties(property_id),
@@ -156,9 +152,22 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UNIQUE(property_id, calendar_date)
     );
-    
-    CREATE INDEX idx_availability_property_date ON silver.availability_calendar(property_id, calendar_date);
-    
+
+    CREATE INDEX IF NOT EXISTS idx_availability_property_date ON silver.availability_calendar(property_id, calendar_date);
+
+    CREATE TABLE IF NOT EXISTS silver.search_trends_cities (
+        id BIGSERIAL PRIMARY KEY,
+        city VARCHAR(100) NOT NULL,
+        metric_date DATE NOT NULL,
+        window_start TIMESTAMP NOT NULL,
+        search_count INTEGER DEFAULT 0,
+        unique_users INTEGER DEFAULT 0,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_search_trends_city ON silver.search_trends_cities(city);
+    CREATE INDEX IF NOT EXISTS idx_search_trends_window ON silver.search_trends_cities(window_start);
+
     CREATE TABLE IF NOT EXISTS silver.hosts (
         host_id BIGSERIAL PRIMARY KEY,
         host_name VARCHAR(255),
@@ -175,11 +184,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
-    
+
     -- ========================================
     -- GOLD LAYER (Analytics-Ready)
     -- ========================================
-    
+
     CREATE TABLE IF NOT EXISTS gold.dim_properties (
         property_key BIGSERIAL PRIMARY KEY,
         property_id BIGINT UNIQUE NOT NULL,
@@ -200,7 +209,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         scd_end_date TIMESTAMP,
         is_current BOOLEAN DEFAULT TRUE
     );
-    
+
     CREATE TABLE IF NOT EXISTS gold.dim_hosts (
         host_key BIGSERIAL PRIMARY KEY,
         host_id BIGINT UNIQUE NOT NULL,
@@ -211,7 +220,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         acceptance_rate DECIMAL(5,2),
         total_listings INTEGER
     );
-    
+
     CREATE TABLE IF NOT EXISTS gold.dim_dates (
         date_key INTEGER PRIMARY KEY,
         calendar_date DATE UNIQUE NOT NULL,
@@ -226,7 +235,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         is_holiday BOOLEAN,
         season VARCHAR(20)
     );
-    
+
     CREATE TABLE IF NOT EXISTS gold.fact_bookings (
         booking_key BIGSERIAL PRIMARY KEY,
         booking_id BIGINT UNIQUE NOT NULL,
@@ -243,7 +252,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         revenue DECIMAL(10,2),
         created_at TIMESTAMP
     );
-    
+
     CREATE TABLE IF NOT EXISTS gold.agg_property_performance (
         property_id BIGINT,
         metric_date DATE,
@@ -257,7 +266,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         cancellation_count INTEGER DEFAULT 0,
         PRIMARY KEY (property_id, metric_date)
     );
-    
+
     CREATE TABLE IF NOT EXISTS gold.agg_city_metrics (
         city VARCHAR(100),
         metric_date DATE,
@@ -268,7 +277,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         avg_nightly_rate DECIMAL(10,2),
         PRIMARY KEY (city, metric_date)
     );
-    
+
     CREATE TABLE IF NOT EXISTS gold.pricing_recommendations (
         property_id BIGINT,
         recommendation_date DATE,
@@ -280,11 +289,11 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY (property_id, recommendation_date)
     );
-    
+
     -- ========================================
     -- METADATA LAYER
     -- ========================================
-    
+
     CREATE TABLE IF NOT EXISTS metadata.pipeline_runs (
         run_id SERIAL PRIMARY KEY,
         pipeline_name VARCHAR(255) NOT NULL,
@@ -296,7 +305,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         completed_at TIMESTAMP
     );
-    
+
     CREATE TABLE IF NOT EXISTS metadata.data_quality_checks (
         check_id SERIAL PRIMARY KEY,
         table_name VARCHAR(255) NOT NULL,
@@ -309,14 +318,14 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         checked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-    -- Create indexes for performance
-    CREATE INDEX idx_pipeline_runs_name_date ON metadata.pipeline_runs(pipeline_name, run_date);
-    CREATE INDEX idx_fact_bookings_property ON gold.fact_bookings(property_key);
-    CREATE INDEX idx_fact_bookings_dates ON gold.fact_bookings(check_in_date_key, check_out_date_key);
+    -- Indexes
+    CREATE INDEX IF NOT EXISTS idx_pipeline_runs_name_date ON metadata.pipeline_runs(pipeline_name, run_date);
+    CREATE INDEX IF NOT EXISTS idx_fact_bookings_property ON gold.fact_bookings(property_key);
+    CREATE INDEX IF NOT EXISTS idx_fact_bookings_dates ON gold.fact_bookings(check_in_date_key, check_out_date_key);
 
-    -- Insert sample date dimension data (next 2 years)
+    -- Seed date dimension (2024-2026)
     INSERT INTO gold.dim_dates (date_key, calendar_date, day_of_week, day_name, week_of_year, month, month_name, quarter, year, is_weekend, is_holiday, season)
-    SELECT 
+    SELECT
         TO_CHAR(d, 'YYYYMMDD')::INTEGER as date_key,
         d::DATE as calendar_date,
         EXTRACT(DOW FROM d)::INTEGER as day_of_week,
@@ -328,7 +337,7 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
         EXTRACT(YEAR FROM d)::INTEGER as year,
         EXTRACT(DOW FROM d) IN (0, 6) as is_weekend,
         FALSE as is_holiday,
-        CASE 
+        CASE
             WHEN EXTRACT(MONTH FROM d) IN (12, 1, 2) THEN 'Winter'
             WHEN EXTRACT(MONTH FROM d) IN (3, 4, 5) THEN 'Spring'
             WHEN EXTRACT(MONTH FROM d) IN (6, 7, 8) THEN 'Summer'
@@ -337,5 +346,14 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-E
     FROM generate_series('2024-01-01'::DATE, '2026-12-31'::DATE, '1 day'::INTERVAL) d
     ON CONFLICT (date_key) DO NOTHING;
 
-    ECHO "✅ Database initialization complete!"
 EOSQL
+
+echo "Database initialization complete."
+
+# Create Airflow metadata database
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
+    SELECT 'CREATE DATABASE airflow_db OWNER airstay'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'airflow_db')\gexec
+EOSQL
+
+echo "Airflow database created."
