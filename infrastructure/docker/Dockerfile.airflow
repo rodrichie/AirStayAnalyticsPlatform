@@ -8,10 +8,6 @@ RUN apt-get update && apt-get install -y \
     g++ \
     build-essential \
     libpq-dev \
-    libgeos-dev \
-    libproj-dev \
-    gdal-bin \
-    libgdal-dev \
     git \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -19,7 +15,7 @@ RUN apt-get update && apt-get install -y \
 USER airflow
 
 # Copy and install Python dependencies
-COPY requirements.txt /tmp/requirements.txt
+COPY infrastructure/docker/requirements-airflow.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir --user -r /tmp/requirements.txt
 
 # Set environment
