@@ -32,7 +32,7 @@ def get_pricing_model():
         try:
             with open(settings.PRICING_MODEL_PATH, 'rb') as f:
                 _pricing_model = pickle.load(f)
-            logger.info("✅ Pricing model loaded")
+            logger.info("Pricing model loaded")
         except Exception as e:
             logger.error(f"Failed to load pricing model: {e}")
             _pricing_model = None
@@ -175,10 +175,10 @@ async def get_batch_recommendations(
             'property_id': row.property_id,
             'current_price': float(row.current_price),
             'recommended_price': float(row.recommended_price),
-            'price_change': float(row.recommended_price - row.current_price),
+            'price_change': round(float(row.recommended_price) - float(row.current_price), 2),
             'price_change_pct': float(row.price_change_pct),
-            'confidence_interval_lower': float(row.recommended_price * 0.95),
-            'confidence_interval_upper': float(row.recommended_price * 1.05),
+            'confidence_interval_lower': round(float(row.recommended_price) * 0.95, 2),
+            'confidence_interval_upper': round(float(row.recommended_price) * 1.05, 2),
             'recommendation_reason': row.reason
         }
         for row in result

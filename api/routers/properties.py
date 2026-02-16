@@ -93,8 +93,14 @@ async def search_properties(
                 :radius_km * 1000
             )
         )
-        ORDER BY 
-            CASE WHEN :latitude IS NOT NULL THEN distance_km END ASC,
+        ORDER BY
+            CASE
+                WHEN :latitude IS NOT NULL AND :longitude IS NOT NULL THEN
+                    ST_Distance(
+                        p.location_point,
+                        ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)::geography
+                    )
+            END ASC NULLS LAST,
             p.property_rating DESC NULLS LAST,
             p.review_count DESC
         LIMIT :limit OFFSET :offset

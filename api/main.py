@@ -35,41 +35,93 @@ settings = get_settings()
 async def lifespan(app: FastAPI):
     """Startup and shutdown events"""
     # Startup
-    logger.info("🚀 Starting AirStay Analytics API")
+    logger.info("Starting AirStay Analytics API")
     logger.info(f"   Environment: {'Development' if settings.DEBUG else 'Production'}")
     logger.info(f"   Version: {settings.APP_VERSION}")
-    
+
     # Test database connection
     try:
+        from sqlalchemy import text as sa_text
         from api.dependencies import engine
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
-        logger.info("✅ Database connection successful")
+            conn.execute(sa_text("SELECT 1"))
+        logger.info("Database connection successful")
     except Exception as e:
-        logger.error(f"❌ Database connection failed: {e}")
-    
+        logger.error(f"Database connection failed: {e}")
+
     # Test Redis connection
     try:
         from api.dependencies import redis_client
         redis_client.ping()
-        logger.info("✅ Redis connection successful")
+        logger.info("Redis connection successful")
     except Exception as e:
-        logger.error(f"❌ Redis connection failed: {e}")
-    
-    yield
-    
-    # Shutdown
-    logger.info("👋 Shutting down AirStay Analytics API")
+        logger.warning(f"Redis connection failed (caching disabled): {e}")
 
+    yield
+
+    # Shutdown
+    logger.info("Shutting down AirStay Analytics API")
+
+
+# OpenAPI tag metadata
+tags_metadata = [
+    {
+        "name": "Properties",
+        "description": "Search, filter, and retrieve vacation rental properties. Supports geo-spatial queries, availability calendars, similar property lookups, and paginated reviews.",
+    },
+    {
+        "name": "Bookings",
+        "description": "Create, retrieve, and cancel bookings. Validates property availability, guest capacity, and minimum night requirements before confirming reservations.",
+    },
+    {
+        "name": "Pricing",
+        "description": "ML-driven dynamic pricing recommendations. Uses historical demand patterns, seasonal trends, competitor pricing, and property features to suggest optimal nightly rates.",
+    },
+    {
+        "name": "Recommendations",
+        "description": "Personalized property recommendations powered by collaborative filtering and content-based models. Includes user-specific suggestions, similar property matching, and trending destinations.",
+    },
+    {
+        "name": "Analytics",
+        "description": "Business intelligence and performance metrics. Property-level performance over time, city-level aggregations, real-time platform activity, and executive dashboard summaries.",
+    },
+]
 
 # Create FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
     version=settings.APP_VERSION,
-    description="Production-grade analytics API for vacation rental platform",
+    description=(
+        "## Vacation Rental Analytics Platform\n\n"
+        "AirStay Analytics is a production-grade platform for managing and analyzing "
+        "vacation rental data with ML-powered pricing and recommendation engines.\n\n"
+        "### Architecture\n\n"
+        "- **PostgreSQL** data warehouse with silver/gold medallion layers\n"
+        "- **Redis** caching for low-latency responses (TTL 60s to 30min)\n"
+        "- **Apache Kafka** for real-time booking and search event streaming\n"
+        "- **Apache Spark** for batch analytics and stream processing\n"
+        "- **Apache Airflow** for orchestrating ETL and ML training pipelines\n"
+        "- **Streamlit** dashboard for visual analytics\n\n"
+        "### ML Models\n\n"
+        "| Model | Purpose |\n"
+        "|---|---|\n"
+        "| Dynamic Pricing | Optimal nightly rate recommendations |\n"
+        "| Demand Forecasting | Occupancy and revenue predictions |\n"
+        "| Recommendation Engine | Personalized property suggestions |\n"
+        "| Anomaly Detection | Unusual booking and pricing pattern alerts |\n"
+        "| Sentiment Analysis | Review classification and scoring |\n"
+    ),
     docs_url=f"{settings.API_PREFIX}/docs",
     redoc_url=f"{settings.API_PREFIX}/redoc",
     openapi_url=f"{settings.API_PREFIX}/openapi.json",
+    openapi_tags=tags_metadata,
+    contact={
+        "name": "AirStay Engineering",
+        "url": "https://github.com/rodrichie/AirStayAnalyticsPlatform",
+    },
+    license_info={
+        "name": "MIT",
+    },
     lifespan=lifespan
 )
 
@@ -114,7 +166,7 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 async def general_exception_handler(request: Request, exc: Exception):
     """Handle general exceptions"""
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
-    
+
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
@@ -156,7 +208,7 @@ async def root():
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     uvicorn.run(
         "main:app",
         host="0.0.0.0",

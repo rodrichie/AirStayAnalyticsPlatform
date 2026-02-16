@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     # Application
     APP_NAME: str = "AirStay Analytics API"
     APP_VERSION: str = "1.0.0"
-    DEBUG: bool = False
+    DEBUG: bool = True
 
     # Database
     DATABASE_URL: str = "postgresql://airstay:airstay_pass@postgres:5432/airstay_db"

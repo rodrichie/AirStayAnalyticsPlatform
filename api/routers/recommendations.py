@@ -31,7 +31,7 @@ def get_recommendation_model():
         try:
             with open(settings.RECOMMENDATION_MODEL_PATH, 'rb') as f:
                 _recommendation_model = pickle.load(f)
-            logger.info("✅ Recommendation model loaded")
+            logger.info("Recommendation model loaded")
         except Exception as e:
             logger.error(f"Failed to load recommendation model: {e}")
             _recommendation_model = None
